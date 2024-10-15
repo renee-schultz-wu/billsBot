@@ -27,7 +27,7 @@ export default function ProfileScreen() {
             style={styles.avatar}
           />
           <ThemedView style={styles.cameraIconContainer}>
-            <Ionicons name="camera" size={20} color="#FFFFFF" />
+            <Ionicons name="camera" size={16} color="#FFFFFF" />
           </ThemedView>
         </ThemedView>
         <ThemedView style={styles.userInfo}>
