@@ -1,70 +1,126 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import React from 'react';
+import { Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
-export default function HomeScreen() {
+const menuItems = [
+  { title: 'Account Management', icon: 'person-outline' },
+  { title: 'Subscription Management', icon: 'card-outline' },
+  { title: 'Data Management', icon: 'analytics-outline' },
+  { title: 'Invite Friends', icon: 'people-outline' },
+  { title: 'App Settings', icon: 'settings-outline' },
+  { title: 'Notification Settings', icon: 'notifications-outline' },
+  { title: 'Security & Privacy', icon: 'shield-outline' },
+  { title: 'Customer Support & Help', icon: 'help-circle-outline' },
+  { title: 'Log Out', icon: 'log-out-outline' },
+];
+
+export default function ProfileScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
+    <ScrollView style={styles.container}>
+      <ThemedView style={styles.headerContent}>
+        <ThemedView style={styles.avatarContainer}>
+          <Image
+            source={require('@/assets/images/avatar-placeholder.png')}
+            style={styles.avatar}
+          />
+          <ThemedView style={styles.cameraIconContainer}>
+            <Ionicons name="camera" size={20} color="#FFFFFF" />
+          </ThemedView>
+        </ThemedView>
+        <ThemedView style={styles.userInfo}>
+          <ThemedText style={styles.name}>Powerpuff</ThemedText>
+          <ThemedText style={styles.email}>Powerpuff@gmail.com</ThemedText>
+          <ThemedText style={styles.plan}>monthly plan</ThemedText>
+        </ThemedView>
+        <TouchableOpacity style={styles.editButton}>
+          <Ionicons name="create-outline" size={20} color="#007AFF" />
+        </TouchableOpacity>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      {menuItems.map((item, index) => (
+        <TouchableOpacity key={index}>
+          <ThemedView style={styles.menuItem}>
+            <Ionicons name={item.icon as any} size={24} color="#888" />
+            <ThemedText style={styles.menuText}>{item.title}</ThemedText>
+            <Ionicons name="chevron-forward" size={24} color="#888" style={styles.chevron} />
+          </ThemedView>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+    backgroundColor: '#FFF',
+  },
+  headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    padding: 20,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#FFF',
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  avatarContainer: {
+    position: 'relative',
+    marginRight: 15,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
+  avatar: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+  },
+  cameraIconContainer: {
     position: 'absolute',
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#007AFF',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  userInfo: {
+    flex: 1,
+  },
+  name: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 2,
+  },
+  email: {
+    fontSize: 14,
+    color: '#888888',
+    marginBottom: 2,
+  },
+  plan: {
+    fontSize: 14,
+    color: '#007AFF',
+  },
+  editButton: {
+    padding: 10,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    paddingLeft: 30,
+    paddingRight: 30,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  menuText: {
+    flex: 1,
+    marginLeft: 16,
+    fontSize: 16,
+  },
+  chevron: {
+    marginLeft: 'auto',
   },
 });
