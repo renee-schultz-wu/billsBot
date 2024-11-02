@@ -6,6 +6,8 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
+import DataVisualization from '@/components/DataVisualization';
+
 // 添加这个接口定义
 interface Transaction {
   id: number;
@@ -67,6 +69,9 @@ export default function HomeScreen() {
         </ThemedText>
       </ThemedView>
 
+      <ThemedView style={styles.stepContainer}>
+        <DataVisualization></DataVisualization>
+      </ThemedView>
 
       <ThemedView style={styles.stepContainer}>
         <Button title="获取交易数据" onPress={fetchTransactions} />
