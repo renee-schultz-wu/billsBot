@@ -44,7 +44,7 @@ export default function ChatScreen() {
       setMessages(prev => [...prev, userMessage]);
       setInputText('');
 
-      const loadingMessage = { text: "正在思考中...", isUser: false };
+      const loadingMessage = { text: "Thinking...", isUser: false };
       setMessages(prev => [...prev, loadingMessage]);
 
       try {
