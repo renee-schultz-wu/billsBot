@@ -7,6 +7,8 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
+import TransactionList from '@/components/TransactionList';
+
 export default function TabTwoScreen() {
   return (
     <ParallaxScrollView
@@ -14,8 +16,10 @@ export default function TabTwoScreen() {
       headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Explore</ThemedText>
+        
       </ThemedView>
       <ThemedText>This app includes example code to help you get started.</ThemedText>
+      < TransactionList />
       <Collapsible title="File-based routing">
         <ThemedText>
           This app has two screens:{' '}
@@ -83,8 +87,10 @@ export default function TabTwoScreen() {
             </ThemedText>
           ),
         })}
+        
       </Collapsible>
     </ParallaxScrollView>
+    
   );
 }
 
