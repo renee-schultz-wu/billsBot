@@ -7,7 +7,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
-import TransactionList from '@/components/TransactionList';
+import TransactionListScreen from '@/components/TransactionList';
 
 export default function TabTwoScreen() {
   return (
@@ -19,7 +19,7 @@ export default function TabTwoScreen() {
         
       </ThemedView>
       <ThemedText>This app includes example code to help you get started.</ThemedText>
-      < TransactionList />
+      < TransactionListScreen apiUrl='http://40.82.180.34:8080/transaction/getAll'/>
       <Collapsible title="File-based routing">
         <ThemedText>
           This app has two screens:{' '}
