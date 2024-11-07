@@ -8,10 +8,13 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 import TransactionListScreen from '@/components/TransactionList';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function TabTwoScreen() {
   return (
+    <ScrollView>
       < TransactionListScreen apiUrl='http://40.82.180.34:8080/transaction/getAll'/>    
+    </ScrollView>
   );
 }
 
