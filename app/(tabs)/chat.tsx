@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { chatWithAI } from '@/services/openai';
+import { API_BASE_URL } from '@/config/constants';
 
 interface ChatMessageProps {
   text: string;
@@ -32,9 +32,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ text, isUser = false }) => (
 export default function ChatScreen() {
   const scrollViewRef = useRef<ScrollView>(null);
   const [messages, setMessages] = useState<ChatMessageProps[]>([
-    { text: "👋 Welcome to Your AI Personal Finance Assistant!", isUser: false },
-    { text: "You can start a conversation with me by sending voice or text messages, uploading photos or files for the expense, and I will record the details. Let's make managing your finances easy together! 💰", isUser: false },
-    { text: "🔹 I spent $15 on groceries yesterday.\n🔹 Paid $50 for dinner at Luigi's Restaurant.\n🔹 Bought movie tickets for $30 at Cinema City.\n🔹 Spent $100 on new clothes at the mall.\n🔹 Paid $20 for a taxi ride to work.\n🔹 Bought concert tickets for $75 at Music Hall.", isUser: false },
+    { text: "👋 Welcome to Your AI Personal Finance Assistant!\n\nYou can start a conversation with me by sending voice or text messages, uploading photos or files for the expense, and I will record the details. Let's make managing your finances easy together! 💰\n \n🔹 I spent $15 on groceries yesterday.\n🔹 Paid $50 for dinner at Luigi's Restaurant.\n🔹 Bought movie tickets for $30 at Cinema.\n🔹 Spent $100 on new clothes at the mall.\n🔹 Paid $20 for a taxi ride to work.\n🔹 Bought concert tickets for $75 at Music Hall.", isUser: false },
   ]);
   const [inputText, setInputText] = useState('');
 
@@ -44,20 +42,32 @@ export default function ChatScreen() {
       setMessages(prev => [...prev, userMessage]);
       setInputText('');
 
-      const loadingMessage = { text: "Thinking...", isUser: false };
+      const loadingMessage = { text: "Processing...", isUser: false };
       setMessages(prev => [...prev, loadingMessage]);
 
       try {
-        const aiResponse = await chatWithAI(inputText);
+        const response = await fetch(`${API_BASE_URL}/transaction/addWithAI`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: inputText }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.text();
         
         setMessages(prev => {
           const newMessages = prev.slice(0, -1);
-          return [...newMessages, { text: aiResponse, isUser: false }];
+          return [...newMessages, { text: data, isUser: false }];
         });
       } catch (error) {
         setMessages(prev => {
           const newMessages = prev.slice(0, -1);
-          return [...newMessages, { text: "抱歉，发生了错误，请稍后重试。", isUser: false }];
+          return [...newMessages, { text: "Sorry, an error occurred. Please try again later.", isUser: false }];
         });
       }
 
