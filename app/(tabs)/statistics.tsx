@@ -20,7 +20,7 @@ export default function HomeScreen() {
 
   const fetchTransactions = async () => {
     try {
-      const response = await fetch('http://localhost:8080/transaction/getAll');
+      const response = await fetch('http://40.82.180.34:8080/transaction/getAll');
       const data = await response.json();
       setTransactions(data);
     } catch (error) {
