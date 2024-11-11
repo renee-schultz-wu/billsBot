@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { StyleSheet, ScrollView, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -10,9 +10,10 @@ import { API_BASE_URL } from '@/config/constants';
 interface ChatMessageProps {
   text: string;
   isUser?: boolean;
+  image?: string;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ text, isUser = false }) => (
+const ChatMessage: React.FC<ChatMessageProps> = ({ text, isUser = false, image }) => (
   <View style={[styles.messageWrapper, isUser ? styles.userMessageWrapper : styles.botMessageWrapper]}>
     {!isUser && (
       <View style={styles.iconContainer}>
@@ -20,6 +21,13 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ text, isUser = false }) => (
       </View>
     )}
     <ThemedView style={[styles.messageContainer, isUser ? styles.userMessage : styles.botMessage]}>
+      {image && (
+        <Image 
+          source={{ uri: image }} 
+          style={styles.messageImage} 
+          resizeMode="contain"
+        />
+      )}
       <ThemedText style={styles.messageText}>{text}</ThemedText>
     </ThemedView>
     {isUser && (
@@ -93,6 +101,13 @@ export default function ChatScreen() {
     });
 
     if (!result.canceled) {
+      const userImageMessage = { 
+        text: '📸 Image Uploaded',
+        isUser: true,
+        image: result.assets[0].uri
+      };
+      setMessages(prev => [...prev, userImageMessage]);
+
       const loadingMessage = { text: "正在处理图片...", isUser: false };
       setMessages(prev => [...prev, loadingMessage]);
 
@@ -163,6 +178,7 @@ export default function ChatScreen() {
             key={index} 
             text={message.text} 
             isUser={message.isUser} 
+            image={message.image} 
           />
         ))}
       </ScrollView>
@@ -270,5 +286,11 @@ const styles = StyleSheet.create({
     padding: 8,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  messageImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+    marginBottom: 8,
   },
 });
