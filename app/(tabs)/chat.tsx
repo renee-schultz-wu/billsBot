@@ -90,7 +90,7 @@ export default function ChatScreen() {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     
     if (permissionResult.granted === false) {
-      alert("需要访问相册的权限才能上传图片");
+      alert("Permission to access gallery is required to upload images");
       return;
     }
 
@@ -108,7 +108,7 @@ export default function ChatScreen() {
       };
       setMessages(prev => [...prev, userImageMessage]);
 
-      const loadingMessage = { text: "正在处理图片...", isUser: false };
+      const loadingMessage = { text: "Processing image...", isUser: false };
       setMessages(prev => [...prev, loadingMessage]);
 
       try {
@@ -121,10 +121,10 @@ export default function ChatScreen() {
         
         const maxSize = 15 * 1024 * 1024; // 15MB
         if (blob.size > maxSize) {
-          alert("图片大小不能超过15MB");
+          alert("Image size cannot exceed 15MB");
           setMessages(prev => {
             const newMessages = prev.slice(0, -1);
-            return [...newMessages, { text: "图片大小超过限制，请选择小于15MB的图片。", isUser: false }];
+            return [...newMessages, { text: "Image size exceeds limit. Please choose an image smaller than 15MB.", isUser: false }];
           });
           return;
         }
@@ -154,7 +154,7 @@ export default function ChatScreen() {
         console.error('Upload error:', error);
         setMessages(prev => {
           const newMessages = prev.slice(0, -1);
-          return [...newMessages, { text: "抱歉，上传图片时出现错误。请稍后重试。", isUser: false }];
+          return [...newMessages, { text: "Sorry, an error occurred while uploading the image. Please try again later.", isUser: false }];
         });
       }
 
