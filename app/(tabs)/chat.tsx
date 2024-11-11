@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { StyleSheet, ScrollView, View, TextInput, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -77,6 +78,77 @@ export default function ChatScreen() {
     }
   };
 
+  const handleImagePick = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+    if (permissionResult.granted === false) {
+      alert("需要访问相册的权限才能上传图片");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const loadingMessage = { text: "正在处理图片...", isUser: false };
+      setMessages(prev => [...prev, loadingMessage]);
+
+      try {
+        const formData = new FormData();
+        const localUri = result.assets[0].uri;
+        const filename = localUri.split('/').pop();
+        
+        const response = await fetch(localUri);
+        const blob = await response.blob();
+        
+        const maxSize = 15 * 1024 * 1024; // 15MB
+        if (blob.size > maxSize) {
+          alert("图片大小不能超过15MB");
+          setMessages(prev => {
+            const newMessages = prev.slice(0, -1);
+            return [...newMessages, { text: "图片大小超过限制，请选择小于15MB的图片。", isUser: false }];
+          });
+          return;
+        }
+
+        const file = new File([blob], filename || 'image.jpg', { type: 'image/jpeg' });
+        formData.append('image', file);
+
+        const uploadResponse = await fetch(`${API_BASE_URL}/transaction/addWithAIImg`, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Accept': 'application/json',
+          },
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await uploadResponse.text();
+        
+        setMessages(prev => {
+          const newMessages = prev.slice(0, -1);
+          return [...newMessages, { text: data, isUser: false }];
+        });
+      } catch (error) {
+        console.error('Upload error:', error);
+        setMessages(prev => {
+          const newMessages = prev.slice(0, -1);
+          return [...newMessages, { text: "抱歉，上传图片时出现错误。请稍后重试。", isUser: false }];
+        });
+      }
+
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+    }
+  };
+
   return (
     <ThemedView style={styles.container}>
       <ScrollView 
@@ -98,7 +170,7 @@ export default function ChatScreen() {
         <TouchableOpacity style={styles.iconButton}>
           <Ionicons name="camera" size={24} color="#000" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton}>
+        <TouchableOpacity style={styles.iconButton} onPress={handleImagePick}>
           <Ionicons name="image" size={24} color="#000" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconButton}>
