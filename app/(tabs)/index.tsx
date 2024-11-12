@@ -168,24 +168,6 @@ const FinanceDashboard = () => {
         </View>
       </ScrollView>
 
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="home" size={24} color="#6366F1" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="credit-card" size={24} color="#9CA3AF" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="message-circle" size={24} color="#9CA3AF" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="bar-chart-2" size={24} color="#9CA3AF" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
-          <Icon name="user" size={24} color="#9CA3AF" />
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 };
