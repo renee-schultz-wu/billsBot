@@ -1,3 +1,4 @@
+
 // DataVisualization.js
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Dimensions, StyleSheet } from 'react-native';
@@ -13,31 +14,31 @@ const DataVisualization = () => {
 
   // Sample data - replace with your actual data
   const monthlyData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    labels: ["Aug", "Sep", "Oct", "Nov"],
     datasets: [
       {
-        data: [20, 45, 28, 80, 99, 43],
+        data: [77, 80, 99, 43],
       }
     ]
   };
 
   const pieData = [
     {
-      name: "Product A",
+      name: "Housing",
       population: 45,
       color: "#FF6384",
       legendFontColor: "#7F7F7F",
       legendFontSize: 15
     },
     {
-      name: "Product B",
+      name: "Food and Dining",
       population: 28,
       color: "#36A2EB",
       legendFontColor: "#7F7F7F",
       legendFontSize: 15
     },
     {
-      name: "Product C",
+      name: "Shopping",
       population: 80,
       color: "#FFCE56",
       legendFontColor: "#7F7F7F",
@@ -46,7 +47,7 @@ const DataVisualization = () => {
   ];
 
   const progressData = {
-    labels: ["Swim", "Bike", "Run"], // optional
+    labels: ["Food and Dining", "Shopping", "Housing"], // optional
     data: [0.4, 0.6, 0.8]
   };
 
@@ -65,7 +66,7 @@ const DataVisualization = () => {
         <Text style={styles.title}>Monthly Performance</Text>
         <LineChart
           data={monthlyData}
-          width={screenWidth - 40}
+          width={screenWidth - 200}
           height={220}
           chartConfig={chartConfig}
           bezier
@@ -77,7 +78,7 @@ const DataVisualization = () => {
         <Text style={styles.title}>Category Distribution</Text>
         <PieChart
           data={pieData}
-          width={screenWidth - 40}
+          width={screenWidth - 200}
           height={220}
           chartConfig={chartConfig}
           accessor={"population"}
@@ -91,7 +92,7 @@ const DataVisualization = () => {
         <Text style={styles.title}>Progress Overview</Text>
         <ProgressChart
           data={progressData}
-          width={screenWidth - 40}
+          width={screenWidth - 200}
           height={220}
           strokeWidth={16}
           radius={32}
