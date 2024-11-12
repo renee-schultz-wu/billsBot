@@ -7,12 +7,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
+  Image,
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import Icon from 'react-native-vector-icons/Feather';
 
 const FinanceDashboard = () => {
-  // Add state for active period
   const [activePeriod, setActivePeriod] = useState('daily');
 
   // Sample data for different periods
@@ -20,7 +20,7 @@ const FinanceDashboard = () => {
     daily: {
       labels: ['01', '10', '20', '30'],
       datasets: [{
-        data: [2000, 1500, 2500, 3000],
+        data: [1875, 1500, 2250, 3000],
       }],
     },
     weekly: {
@@ -51,13 +51,18 @@ const FinanceDashboard = () => {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            <View style={styles.avatar} />
+            <Image
+              source={require('@/assets/images/avatar-placeholder.png')}
+              style={styles.avatar}
+            />
             <View>
               <Text style={styles.title}>Jason, Welcome Back</Text>
               <Text style={styles.subtitle}>Good Morning</Text>
             </View>
           </View>
-          <Icon name="bell" size={24} color="#666" />
+          <TouchableOpacity>
+            <Icon name="bell" size={24} color="#666" />
+          </TouchableOpacity>
         </View>
 
         {/* Finance Overview Card */}
@@ -98,22 +103,32 @@ const FinanceDashboard = () => {
           <LineChart
             data={currentChartData}
             width={Dimensions.get('window').width - 32}
-            height={160}
+            height={180}
+            yAxisLabel="$"
             chartConfig={{
               backgroundColor: '#fff',
               backgroundGradientFrom: '#fff',
               backgroundGradientTo: '#fff',
               decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(96, 165, 250, ${opacity})`,
+              color: (opacity = 1) => `rgba(99, 102, 241, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(156, 163, 175, ${opacity})`,
               style: {
                 borderRadius: 16,
+              },
+              propsForLabels: {
+                fontSize: 12,
+              },
+              propsForVerticalLabels: {
+                fontSize: 12,
               },
             }}
             bezier
             style={styles.chart}
             withDots={false}
             withVerticalLines={false}
-            withHorizontalLines={false}
+            withHorizontalLabels={true}
+            fromZero={true}
+            segments={4}
           />
 
           <View style={styles.periodToggle}>
@@ -153,6 +168,24 @@ const FinanceDashboard = () => {
         </View>
       </ScrollView>
 
+      {/* Bottom Navigation */}
+      <View style={styles.bottomNav}>
+        <TouchableOpacity style={styles.navItem}>
+          <Icon name="home" size={24} color="#6366F1" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem}>
+          <Icon name="credit-card" size={24} color="#9CA3AF" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem}>
+          <Icon name="message-circle" size={24} color="#9CA3AF" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem}>
+          <Icon name="bar-chart-2" size={24} color="#9CA3AF" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem}>
+          <Icon name="user" size={24} color="#9CA3AF" />
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
@@ -160,13 +193,14 @@ const FinanceDashboard = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#fff',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
+    paddingTop: 8,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -176,37 +210,38 @@ const styles = StyleSheet.create({
   avatar: {
     width: 40,
     height: 40,
-    backgroundColor: '#E5E7EB',
     borderRadius: 20,
+    backgroundColor: '#F3F4F6',
   },
   title: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
+    color: '#111827',
   },
   subtitle: {
     fontSize: 14,
-    color: '#666',
+    color: '#6B7280',
   },
   card: {
     margin: 16,
     padding: 16,
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.05,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 2,
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   cardTitle: {
     fontSize: 14,
-    color: '#666',
+    color: '#6B7280',
   },
   balanceContainer: {
     flexDirection: 'row',
@@ -214,32 +249,34 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   balanceAmount: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#111827',
   },
   expenseAmount: {
     color: '#EF4444',
   },
   balanceLabel: {
     fontSize: 14,
-    color: '#666',
+    color: '#6B7280',
+    marginTop: 4,
   },
   progressContainer: {
     gap: 8,
   },
   progressBar: {
-    height: 8,
-    backgroundColor: '#BFDBFE',
-    borderRadius: 4,
+    height: 6,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 3,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#4F46E5',
-    borderRadius: 4,
+    backgroundColor: '#6366F1',
+    borderRadius: 3,
   },
   progressLabel: {
     fontSize: 14,
-    color: '#666',
+    color: '#6B7280',
   },
   section: {
     padding: 16,
@@ -252,32 +289,31 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 14,
-    color: '#666',
+    color: '#6B7280',
   },
   seeAll: {
     fontSize: 14,
-    color: '#4F46E5',
+    color: '#6366F1',
   },
   chart: {
     marginVertical: 16,
-    borderRadius: 16,
   },
   periodToggle: {
     flexDirection: 'row',
     gap: 8,
-    marginBottom: 16,
+    marginTop: 16,
   },
   periodButton: {
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 20,
-    backgroundColor: '#EEF2FF',
+    backgroundColor: '#F3F4F6',
   },
   periodButtonActive: {
-    backgroundColor: '#4F46E5',
+    backgroundColor: '#6366F1',
   },
   periodButtonText: {
-    color: '#4F46E5',
+    color: '#6B7280',
     fontSize: 14,
   },
   periodButtonTextActive: {
@@ -289,6 +325,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
   },
   salaryLeft: {
     flexDirection: 'row',
@@ -312,18 +350,24 @@ const styles = StyleSheet.create({
   salaryText: {
     fontSize: 16,
     fontWeight: '500',
+    color: '#111827',
   },
   salaryAmount: {
     fontSize: 16,
     fontWeight: '500',
+    color: '#111827',
   },
   bottomNav: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 16,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    padding: 12,
     backgroundColor: '#fff',
     borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
+    borderTopColor: '#F3F4F6',
+  },
+  navItem: {
+    padding: 8,
   },
 });
 
