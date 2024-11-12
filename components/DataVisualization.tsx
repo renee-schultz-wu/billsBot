@@ -1,7 +1,6 @@
-
 // DataVisualization.js
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Dimensions, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Dimensions, StyleSheet, Platform, ViewProps } from 'react-native';
 import {
   LineChart,
   BarChart,
@@ -9,7 +8,11 @@ import {
   ProgressChart,
 } from "react-native-chart-kit";
 
-const DataVisualization = () => {
+interface DataVisualizationProps extends ViewProps {
+  // 其他属性...
+}
+
+const DataVisualization: React.FC<DataVisualizationProps> = ({ style, ...props }) => {
   const screenWidth = Dimensions.get("window").width;
 
   // Sample data - replace with your actual data
@@ -31,7 +34,7 @@ const DataVisualization = () => {
       legendFontSize: 15
     },
     {
-      name: "Food and Dining",
+      name: "Food",
       population: 28,
       color: "#36A2EB",
       legendFontColor: "#7F7F7F",
@@ -47,7 +50,7 @@ const DataVisualization = () => {
   ];
 
   const progressData = {
-    labels: ["Food and Dining", "Shopping", "Housing"], // optional
+    labels: ["Food", "Shopping", "Housing"], // optional
     data: [0.4, 0.6, 0.8]
   };
 
@@ -60,17 +63,38 @@ const DataVisualization = () => {
     useShadowColorFromDataset: false
   };
 
+  const chartWidth = Math.max(150, screenWidth - 60);
+
+  const handleClick = () => {
+    // Handle click event
+  };
+
+  // 在图表组件上添加条件渲染的属性
+  const touchEvents = Platform.select({
+    web: {},
+    default: {
+      onStartShouldSetResponder: () => true,
+      onResponderGrant: () => {},
+      onResponderMove: () => {},
+      onResponderRelease: () => {},
+      onResponderTerminate: () => {},
+      onResponderTerminationRequest: () => true,
+    },
+  });
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.chartContainer}>
         <Text style={styles.title}>Monthly Performance</Text>
         <LineChart
           data={monthlyData}
-          width={screenWidth - 200}
+          width={chartWidth}
           height={220}
           chartConfig={chartConfig}
           bezier
           style={styles.chart}
+          // onClick={handleClick}
+          // {...touchEvents}
         />
       </View>
 
@@ -78,13 +102,15 @@ const DataVisualization = () => {
         <Text style={styles.title}>Category Distribution</Text>
         <PieChart
           data={pieData}
-          width={screenWidth - 200}
+          width={chartWidth}
           height={220}
           chartConfig={chartConfig}
           accessor={"population"}
           backgroundColor={"transparent"}
           paddingLeft={"15"}
           style={styles.chart}
+          // onClick={handleClick}
+          // {...touchEvents}
         />
       </View>
 
@@ -92,7 +118,7 @@ const DataVisualization = () => {
         <Text style={styles.title}>Progress Overview</Text>
         <ProgressChart
           data={progressData}
-          width={screenWidth - 200}
+          width={chartWidth}
           height={220}
           strokeWidth={16}
           radius={32}
@@ -102,6 +128,8 @@ const DataVisualization = () => {
           }}
           hideLegend={false}
           style={styles.chart}
+          // onClick={handleClick}
+          // {...touchEvents}
         />
       </View>
     </ScrollView>
@@ -111,13 +139,13 @@ const DataVisualization = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff',
   },
   chartContainer: {
     backgroundColor: '#ffffff',
-    marginHorizontal: 20,
+    marginHorizontal: 0,
     marginVertical: 10,
-    padding: 15,
+    padding: 10,
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: {

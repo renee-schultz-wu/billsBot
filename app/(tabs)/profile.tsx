@@ -36,7 +36,7 @@ export default function ProfileScreen() {
           <ThemedText style={styles.plan}>monthly plan</ThemedText>
         </ThemedView>
         <TouchableOpacity style={styles.editButton}>
-          <Ionicons name="create-outline" size={20} color="#007AFF" />
+          <Ionicons name="create-outline" size={20} color="#A7B8F2" />
         </TouchableOpacity>
       </ThemedView>
       {menuItems.map((item, index) => (
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     bottom: 0,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#5063BF',
     borderRadius: 12,
     width: 24,
     height: 24,
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   },
   plan: {
     fontSize: 14,
-    color: '#007AFF',
+    color: '#A7B8F2',
   },
   editButton: {
     padding: 10,

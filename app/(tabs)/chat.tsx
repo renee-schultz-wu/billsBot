@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { StyleSheet, ScrollView, View, TextInput, TouchableOpacity, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
 import { ThemedText } from '@/components/ThemedText';
@@ -17,7 +17,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ text, isUser = false, image }
   <View style={[styles.messageWrapper, isUser ? styles.userMessageWrapper : styles.botMessageWrapper]}>
     {!isUser && (
       <View style={styles.iconContainer}>
-        <Ionicons name="logo-react" size={24} color="#61DAFB" />
+        <Image 
+          source={require('@/assets/images/AIBot.png')}
+          style={styles.avatarImage}
+        />
       </View>
     )}
     <ThemedView style={[styles.messageContainer, isUser ? styles.userMessage : styles.botMessage]}>
@@ -28,11 +31,17 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ text, isUser = false, image }
           resizeMode="contain"
         />
       )}
-      <ThemedText style={styles.messageText}>{text}</ThemedText>
+      <ThemedText style={[
+        styles.messageText,
+        isUser && { color: '#fff' }
+      ]}>{text}</ThemedText>
     </ThemedView>
     {isUser && (
       <View style={styles.iconContainer}>
-        <Ionicons name="person-circle" size={24} color="#1D3D47" />
+        <Image 
+          source={require('@/assets/images/avatar-placeholder.png')}
+          style={styles.avatarImage}
+        />
       </View>
     )}
   </View>
@@ -40,8 +49,19 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ text, isUser = false, image }
 
 export default function ChatScreen() {
   const scrollViewRef = useRef<ScrollView>(null);
+  const welcomeText = [
+    "👋 Welcome to Your AI Personal Finance Assistant!\n\n",
+    "You can start a conversation with me by sending voice or text messages, uploading photos or files for the expense, and I will record the details. Let's make managing your finances easy together! 💰\n \n",
+    // <MaterialIcons name="fiber-manual-record" size={8} color="#61DAFB" />, " I spent $15 on groceries yesterday.\n",
+    // <MaterialIcons name="fiber-manual-record" size={8} color="#61DAFB" />, " Paid $50 for dinner at Luigi's Restaurant.\n",
+    // <MaterialIcons name="fiber-manual-record" size={8} color="#61DAFB" />, " Bought movie tickets for $30 at Cinema.\n",
+    // <MaterialIcons name="fiber-manual-record" size={8} color="#61DAFB" />, " Spent $100 on new clothes at the mall.\n",
+    // <MaterialIcons name="fiber-manual-record" size={8} color="#61DAFB" />, " Paid $20 for a taxi ride to work.\n",
+    // <MaterialIcons name="fiber-manual-record" size={8} color="#61DAFB" />, " Bought concert tickets for $75 at Music Hall.",
+  ].join('');
+
   const [messages, setMessages] = useState<ChatMessageProps[]>([
-    { text: "👋 Welcome to Your AI Personal Finance Assistant!\n\nYou can start a conversation with me by sending voice or text messages, uploading photos or files for the expense, and I will record the details. Let's make managing your finances easy together! 💰\n \n🔹 I spent $15 on groceries yesterday.\n🔹 Paid $50 for dinner at Luigi's Restaurant.\n🔹 Bought movie tickets for $30 at Cinema.\n🔹 Spent $100 on new clothes at the mall.\n🔹 Paid $20 for a taxi ride to work.\n🔹 Bought concert tickets for $75 at Music Hall.", isUser: false },
+    { text: "👋 Welcome to Your AI Personal Finance Assistant!\n\nYou can start a conversation with me by sending voice or text messages, uploading photos or files for the expense, and I will record the details. Let's make managing your finances easy together! ", isUser: false },
   ]);
   const [inputText, setInputText] = useState('');
 
@@ -248,7 +268,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   userMessage: {
-    backgroundColor: '#A1CEDC',
+    backgroundColor: '#5063BF',
     borderBottomRightRadius: 4,
   },
   botMessage: {
@@ -281,7 +301,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   sendButton: {
-    backgroundColor: '#1D3D47',
+    backgroundColor: '#5063BF',
     borderRadius: 20,
     padding: 8,
     alignItems: 'center',
@@ -292,5 +312,10 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 8,
     marginBottom: 8,
+  },
+  avatarImage: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
   },
 });

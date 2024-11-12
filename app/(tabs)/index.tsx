@@ -12,8 +12,10 @@ import {
 import { LineChart } from 'react-native-chart-kit';
 import Icon from 'react-native-vector-icons/Feather';
 
+type ChartPeriod = 'daily' | 'weekly' | 'monthly';
+
 const FinanceDashboard = () => {
-  const [activePeriod, setActivePeriod] = useState('daily');
+  const [activePeriod, setActivePeriod] = useState<ChartPeriod>('daily');
 
   // Sample data for different periods
   const chartData = {
@@ -38,8 +40,8 @@ const FinanceDashboard = () => {
   };
 
   // Function to handle period change
-  const handlePeriodChange = (period) => {
-    setActivePeriod(period.toLowerCase());
+  const handlePeriodChange = (period: string) => {
+    setActivePeriod(period.toLowerCase() as ChartPeriod);
   };
 
   // Get current period's data
@@ -56,7 +58,7 @@ const FinanceDashboard = () => {
               style={styles.avatar}
             />
             <View>
-              <Text style={styles.title}>Jason, Welcome Back</Text>
+              <Text style={styles.title}>Powerpuff, Welcome Back</Text>
               <Text style={styles.subtitle}>Good Morning</Text>
             </View>
           </View>
@@ -181,8 +183,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    paddingTop: 8,
+    padding: 25,
+    paddingTop: 18,
+    paddingBottom: 0,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -236,7 +239,7 @@ const styles = StyleSheet.create({
     color: '#111827',
   },
   expenseAmount: {
-    color: '#EF4444',
+    color: '#72A1FB',
   },
   balanceLabel: {
     fontSize: 14,
@@ -253,7 +256,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#6366F1',
+    backgroundColor: '#5063BF',
     borderRadius: 3,
   },
   progressLabel: {
@@ -275,7 +278,7 @@ const styles = StyleSheet.create({
   },
   seeAll: {
     fontSize: 14,
-    color: '#6366F1',
+    color: '#5063BF',
   },
   chart: {
     marginVertical: 16,
@@ -292,7 +295,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F4F6',
   },
   periodButtonActive: {
-    backgroundColor: '#6366F1',
+    backgroundColor: '#5063BF',
   },
   periodButtonText: {
     color: '#6B7280',
@@ -326,7 +329,7 @@ const styles = StyleSheet.create({
   salaryIconInner: {
     width: 24,
     height: 24,
-    backgroundColor: '#BFDBFE',
+    backgroundColor: '#A7B8F2',
     borderRadius: 8,
   },
   salaryText: {
