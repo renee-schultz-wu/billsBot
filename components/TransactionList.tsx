@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, ListRenderItem, Image, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ListRenderItem, Image, ActivityIndicator, TextInput, TouchableOpacity } from 'react-native';
 import { useEffect, useState } from 'react';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 interface Transaction {
   id: number;
@@ -27,7 +28,7 @@ interface Transaction {
 }
 
 interface TransactionListScreenProps {
-    apiUrl: string;  // Pass the API URL as a prop
+    apiUrl: string;
 }
 
 const TransactionCard: React.FC<{ transaction: Transaction }> = ({ transaction }) => {
@@ -35,53 +36,42 @@ const TransactionCard: React.FC<{ transaction: Transaction }> = ({ transaction }
     transactionAt,
     counterpartyName,
     category,
-    description,
     totalAmount,
     currency,
-    paymentMethod,
-    location,
-    tags
   } = transaction;
 
-  const formattedDate = new Date(transactionAt).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
+  const formattedDate = new Date(transactionAt).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
   });
 
   const formattedAmount = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: currency,
   }).format(totalAmount);
-  
+
   return (
     <View style={styles.card}>
+      <View style={styles.iconContainer}>
+        <Ionicons name="bag-outline" size={24} color="white" style={styles.icon} />
+      </View>
       <View style={styles.mainContent}>
-        <View style={styles.leftContent}>
-          <Text style={styles.title}>{counterpartyName}</Text>
-          <Text style={styles.description}>{description}</Text>
-          <View style={styles.detailsRow}>
-            <Text style={styles.category}>{category}</Text>
-            <Text style={styles.dot}>•</Text>
-            <Text style={styles.paymentMethod}>{paymentMethod}</Text>
-          </View>
-
-          <Text style={styles.location}>{location}</Text>
-        </View>
-        <View style={styles.rightContent}>
-          <Text style={styles.amount}>{formattedAmount}</Text>
-          <Text style={styles.date}>{formattedDate}</Text>
-        </View>
+        <Text style={styles.title}>{counterpartyName}</Text>
+        <Text style={styles.time}>{formattedDate}</Text>
+      </View>
+      <View style={styles.rightContent}>
+        <Text style={styles.amount}>{formattedAmount}</Text>
+        <Ionicons name="arrow-up-outline" size={20} color="#4A90E2" />
       </View>
     </View>
   );
 };
 
-
 const TransactionListScreen: React.FC<TransactionListScreenProps> = ({ apiUrl }) => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState("");
   
     useEffect(() => {
       fetchTransactions();
@@ -108,6 +98,12 @@ const TransactionListScreen: React.FC<TransactionListScreenProps> = ({ apiUrl })
       }
     };
   
+    const filteredTransactions = transactions.filter(transaction =>
+      transaction.counterpartyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      transaction.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      transaction.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  
     const renderItem: ListRenderItem<Transaction> = ({ item }) => (
       <TransactionCard transaction={item} />
     );
@@ -128,19 +124,37 @@ const TransactionListScreen: React.FC<TransactionListScreenProps> = ({ apiUrl })
       );
     }
   
-    if (transactions.length === 0) {
-      return (
-        <View style={styles.container}>
-          <Text>No transactions found</Text>
-        </View>
-      );
-    }
-  
     return (
       <View style={styles.container}>
-        <Text style={styles.header}>Transactions</Text>
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <Ionicons name="search" size={20} color="#888" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+        </View>
+
+        {/* Filters Section */}
+        <View style={styles.filterContainer}>
+          <TouchableOpacity style={styles.filterButton}>
+            <Ionicons name="calendar-outline" size={18} color="#000" />
+            <Text style={styles.filterText}>Date April - May</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.filterButton}>
+            <Ionicons name="list-outline" size={18} color="#000" />
+            <Text style={styles.filterText}>Catalog All</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.addButton}>
+            <Ionicons name="add" size={24} color="#4A90E2" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Transaction List */}
         <FlatList<Transaction>
-          data={transactions}
+          data={filteredTransactions}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
           showsVerticalScrollIndicator={false}
@@ -149,7 +163,7 @@ const TransactionListScreen: React.FC<TransactionListScreenProps> = ({ apiUrl })
         />
       </View>
     );
-  };
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -157,36 +171,87 @@ const styles = StyleSheet.create({
       backgroundColor: '#f5f5f5',
       padding: 16,
     },
-    header: {
-      fontSize: 24,
-      fontWeight: 'bold',
+    searchContainer: {
+      flexDirection: 'row',
+      backgroundColor: '#fff',
+      borderRadius: 12,
+      padding: 10,
       marginBottom: 16,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+      elevation: 2,
+    },
+    searchIcon: {
+      marginRight: 8,
+    },
+    searchInput: {
+      flex: 1,
+      fontSize: 16,
+    },
+    filterContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 16,
+    },
+    filterButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: '#fff',
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      borderRadius: 20,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+      elevation: 2,
+    },
+    filterText: {
+      marginLeft: 8,
+      fontSize: 14,
       color: '#333',
+    },
+    addButton: {
+      backgroundColor: '#fff',
+      padding: 10,
+      borderRadius: 50,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+      elevation: 2,
     },
     card: {
       backgroundColor: 'white',
       borderRadius: 12,
       padding: 16,
       marginBottom: 12,
+      flexDirection: 'row',
+      alignItems: 'center',
       shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
+      shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
       shadowRadius: 4,
       elevation: 3,
     },
+    iconContainer: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: '#4A90E2',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 16,
+    },
+    icon: {
+      color: 'white',
+    },
     mainContent: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    leftContent: {
       flex: 1,
-      marginRight: 12,
-    },
-    rightContent: {
-      alignItems: 'flex-end',
     },
     title: {
       fontSize: 16,
@@ -194,59 +259,18 @@ const styles = StyleSheet.create({
       color: '#333',
       marginBottom: 4,
     },
-    description: {
-      fontSize: 14,
-      color: '#666',
-      marginBottom: 4,
-    },
-    detailsRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: 8,
-    },
-    category: {
+    time: {
       fontSize: 12,
       color: '#888',
     },
-    dot: {
-      fontSize: 12,
-      color: '#888',
-      marginHorizontal: 4,
-    },
-    paymentMethod: {
-      fontSize: 12,
-      color: '#888',
-    },
-    tagsContainer: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      marginBottom: 8,
-    },
-    tag: {
-      backgroundColor: '#f0f0f0',
-      borderRadius: 12,
-      paddingHorizontal: 8,
-      paddingVertical: 4,
-      marginRight: 8,
-      marginBottom: 4,
-    },
-    tagText: {
-      fontSize: 12,
-      color: '#666',
-    },
-    location: {
-      fontSize: 12,
-      color: '#888',
+    rightContent: {
+      alignItems: 'flex-end',
     },
     amount: {
       fontSize: 16,
       fontWeight: '600',
       color: '#333',
       marginBottom: 4,
-    },
-    date: {
-      fontSize: 12,
-      color: '#888',
     },
 });
 
