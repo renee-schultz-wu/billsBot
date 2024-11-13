@@ -1,7 +1,7 @@
-import { View, Text, TextInput, FlatList } from 'react-native';
+import { View, Text, TextInput, FlatList, RefreshControl } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { API_BASE_URL } from '@/config/constants';
 
 // Define transaction type
@@ -99,20 +99,29 @@ const getCategoryColor = (category: string): string => {
 };
 
 export default function TransactionsScreen() {
-  // Sample transaction data
+  const [refreshing, setRefreshing] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
+  const fetchTransactions = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/transaction/getAll`);
+      const data = await response.json();
+      setTransactions(data);
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+    }
+  };
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await fetchTransactions();
+    } finally {
+      setRefreshing(false);
+    }
+  }, []);
+
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/transaction/getAll`);
-        const data = await response.json();
-        setTransactions(data);
-      } catch (error) {
-        console.error('Error fetching transactions:', error);
-      }
-    };
-    
     fetchTransactions();
   }, []);
 
@@ -179,6 +188,14 @@ export default function TransactionsScreen() {
           </View>
         )}
         style={styles.transactionList}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#5063BF"
+            colors={['#5063BF']}
+          />
+        }
       />
     </View>
   );
