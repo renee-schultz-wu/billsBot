@@ -89,9 +89,11 @@ export default function ChatScreen() {
 
         const data = await response.text();
         
+        const formattedText = formatTransactionResponse(data);
+        
         setMessages(prev => {
           const newMessages = prev.slice(0, -1);
-          return [...newMessages, { text: data, isUser: false }];
+          return [...newMessages, { text: formattedText, isUser: false }];
         });
       } catch (error) {
         setMessages(prev => {
@@ -103,6 +105,36 @@ export default function ChatScreen() {
       setTimeout(() => {
         scrollViewRef.current?.scrollToEnd({ animated: true });
       }, 100);
+    }
+  };
+
+  const formatTransactionResponse = (response: string) => {
+    try {
+      const transaction = JSON.parse(response);
+      let formattedText = ``;
+      
+      const fields = {
+        amount: { icon: '💰', label: 'Amount', value: transaction.amount ? `$${transaction.amount}` : null },
+        date: { icon: '📅', label: 'Date', value: transaction.date },
+        time: { icon: '⏰', label: 'Time', value: transaction.time },
+        transaction_type: { icon: '🔄', label: 'Type', value: transaction.transaction_type },
+        category: { icon: '🏷️', label: 'Category', value: transaction.category },
+        description: { icon: '📝', label: 'Description', value: transaction.description },
+        payment_method: { icon: '💳', label: 'Payment Method', value: transaction.payment_method },
+        currency: { icon: '💱', label: 'Currency', value: transaction.currency },
+        location: { icon: '📍', label: 'Location', value: transaction.location },
+        participants: { icon: '👥', label: 'Participants', value: transaction.participants }
+      };
+
+      Object.entries(fields).forEach(([key, { icon, label, value }]) => {
+        if (value) {
+          formattedText += `${icon} ${label}: ${value}\n`;
+        }
+      });
+
+      return formattedText + '\nTransaction has been saved successfully! ✅';
+    } catch (e) {
+      return response;
     }
   };
 
@@ -166,9 +198,11 @@ export default function ChatScreen() {
 
         const data = await uploadResponse.text();
         
+        const formattedText = formatTransactionResponse(data);
+        
         setMessages(prev => {
           const newMessages = prev.slice(0, -1);
-          return [...newMessages, { text: data, isUser: false }];
+          return [...newMessages, { text: formattedText, isUser: false }];
         });
       } catch (error) {
         console.error('Upload error:', error);
