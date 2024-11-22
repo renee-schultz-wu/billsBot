@@ -31,7 +31,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "允许应用访问您的相册以选择上传图片。"
+          "photosPermission": "Allow the app to access your photos",
+          "cameraPermission": "Allow the app to use your camera"
         }
       ]
     ],
